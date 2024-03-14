@@ -27,8 +27,7 @@ function trackSunMoonCycle(secondsPerDay) {
             interpolatedColor = interpolateColor(nightColor, dayColor, (interpolationFactor - 0.5) * 2);
         }
         lightLiveData.innerHTML = `${(((interpolatedColor[0] + interpolatedColor[1] + interpolatedColor[2]) / 3) * 100).toFixed(2)}%`;
-        gl.clearColor(interpolatedColor[0], interpolatedColor[1], interpolatedColor[2], 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        //cntxt.fillStyle = `rgb(${interpolatedColor[0] * 255}, ${interpolatedColor[1] * 255}, ${interpolatedColor[2] * 255})`;
     }, 1000);
 }
 
