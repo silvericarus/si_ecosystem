@@ -9,7 +9,7 @@ var cols;
 
 function start() {
 	startGL();
-	trackSunMoonCycle(64);
+	trackSunMoonCycle(64, cntxt);
 }
 
 function create_board(row, col) {
