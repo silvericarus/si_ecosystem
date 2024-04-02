@@ -1,10 +1,6 @@
 function drawPlane(cntxt, canvasWidth, canvasHeight) {
-    const dpi = window.devicePixelRatio;
-    cntxt.canvas.width = canvasWidth * dpi;
-    cntxt.canvas.height = canvasHeight * dpi;
-    cntxt.scale(dpi, dpi);
-    cntxt.clearRect(0, 0, canvasWidth, canvasHeight);
-    const tileSize = 64; // Size of the tiles
+    cntxt.fillStyle = "#926829";
+    const tileSize = 72; // Size of the tiles
     const rectWidth = tileSize * 2;
     const rectHeight = tileSize;
     const centerX = canvasWidth / 2;
@@ -18,6 +14,11 @@ function drawPlane(cntxt, canvasWidth, canvasHeight) {
     cntxt.lineTo(isoX + rectWidth, isoY + rectHeight);
     cntxt.closePath();
     cntxt.fill();
+}
+
+function drawBackground(cntxt, interpolatedColor, canvasWidth, canvasHeight) {
+    cntxt.fillStyle = `rgb(${interpolatedColor[0] * 255}, ${interpolatedColor[1] * 255}, ${interpolatedColor[2] * 255})`;
+    cntxt.fillRect(0, 0, canvasWidth, canvasHeight);
 }
 
 function trackSunMoonCycle(secondsPerDay, cntxt) {
@@ -34,7 +35,10 @@ function trackSunMoonCycle(secondsPerDay, cntxt) {
     const canvas = cntxt.canvas;
     const canvasWidth = canvas.width;
     const canvasHeight = canvas.height;
-
+    const dpi = window.devicePixelRatio;
+    cntxt.canvas.width = canvasWidth * dpi;
+    cntxt.canvas.height = canvasHeight * dpi;
+    cntxt.scale(dpi, dpi);
     setInterval(() => {
         currentSeconds += 1;
         timeLiveData.innerHTML = `${currentSeconds}`;
@@ -52,7 +56,7 @@ function trackSunMoonCycle(secondsPerDay, cntxt) {
             interpolatedColor = interpolateColor(nightColor, dayColor, (interpolationFactor - 0.5) * 2);
         }
         lightLiveData.innerHTML = `${(((interpolatedColor[0] + interpolatedColor[1] + interpolatedColor[2]) / 3) * 100).toFixed(2)}%`;
-        cntxt.fillStyle = `rgb(${interpolatedColor[0] * 255}, ${interpolatedColor[1] * 255}, ${interpolatedColor[2] * 255})`;
+        drawBackground(cntxt, interpolatedColor , canvasWidth, canvasHeight);
         drawPlane(cntxt, canvasWidth, canvasHeight);
     }, 1000);
 }
