@@ -6,8 +6,12 @@ var tileX, tileY;
 var board;
 var rows;
 var cols;
+const forest = new Forest();
 
 function start() {
+	forest.addTree(new Tree("Oak"));
+	forest.addTree(new Tree("Pine"));
+	console.table(forest.trees);
 	startGL();
 	trackSunMoonCycle(64, cntxt);
 }
