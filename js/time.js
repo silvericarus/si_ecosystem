@@ -16,6 +16,33 @@ function drawPlane(cntxt, canvasWidth, canvasHeight) {
     cntxt.fill();
 }
 
+function drawSquare(cntxt, x, y, tileSize) {
+    // Cálculo de las coordenadas isométricas del centro del rombo
+    const isoX = (x - y) * tileSize;
+    const isoY = (x + y) / 2 * tileSize;
+
+    // Calcular las coordenadas de los vértices del rombo
+    const halfSize = tileSize / 2;
+    const topX = isoX + halfSize;
+    const topY = isoY;
+    const rightX = isoX + tileSize;
+    const rightY = isoY + halfSize;
+    const bottomX = isoX + halfSize;
+    const bottomY = isoY + tileSize;
+    const leftX = isoX;
+    const leftY = isoY + halfSize;
+    
+    // Dibujar el rombo
+    cntxt.fillStyle = "red";
+    cntxt.beginPath();
+    cntxt.moveTo(topX, topY);
+    cntxt.lineTo(rightX, rightY);
+    cntxt.lineTo(bottomX, bottomY);
+    cntxt.lineTo(leftX, leftY);
+    cntxt.closePath();
+    cntxt.fill();
+}
+
 function drawBackground(cntxt, interpolatedColor, canvasWidth, canvasHeight) {
     cntxt.fillStyle = `rgb(${interpolatedColor[0] * 255}, ${interpolatedColor[1] * 255}, ${interpolatedColor[2] * 255})`;
     cntxt.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -46,7 +73,7 @@ function trackSunMoonCycle(secondsPerDay, cntxt) {
             currentSeconds = 0;
             currentDay += 1;
             dateLiveData.innerHTML = `${currentDay}`;
-            console.log('currentDay:', currentDay);
+            // console.log('currentDay:', currentDay);
         }
         interpolationFactor = currentSeconds / totalSecondsInDay;
         interpolationFactor = Math.max(0, Math.min(1, interpolationFactor));
@@ -58,6 +85,7 @@ function trackSunMoonCycle(secondsPerDay, cntxt) {
         lightLiveData.innerHTML = `${(((interpolatedColor[0] + interpolatedColor[1] + interpolatedColor[2]) / 3) * 100).toFixed(2)}%`;
         drawBackground(cntxt, interpolatedColor , canvasWidth, canvasHeight);
         drawPlane(cntxt, canvasWidth, canvasHeight);
+        drawSquare(cntxt, 1, 1, 10);
     }, 1000);
 }
 
