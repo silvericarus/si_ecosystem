@@ -18,8 +18,21 @@ class Forest {
 }
 
 class Tree {
-    constructor(treeKind) {
+    constructor(treeKind, x, y, tileX, tileY) {
         this.treeKind = treeKind;
-        this.edad = 0;
+        this.age = 0;
+        this.color = 'green';
+        this.x = x;
+        this.y = y;
+        this.tileX = tileX;
+        this.tileY = tileY;
+        this.size = 10;
+        this.draw();
+    }
+
+    draw = function() {
+        var color = this.color;
+        cntxt.fillStyle = color;
+        cntxt.fillRect(this.x * tileX, this.y * tileY, this.size, this.size);
     }
 }
