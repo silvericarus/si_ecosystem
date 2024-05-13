@@ -3,20 +3,28 @@ var cntxt;
 var canvasX;
 var canvasY;
 var tileX, tileY;
-var board;
-var rows;
-var cols;
+var board 
+var rows = 150;
+var cols = 300;
 var randomSizeOfForest = Math.floor(Math.random() * 300);
 const forest = new Forest();
 
+function treeGeneration() {
+	for(var i = 0; i < randomSizeOfForest; i++){
+		for(var j = 0; j < rows; j++){
+			for(var k = 0; k < cols; k++){
+				const trueCheck = Math.random();
+				if(trueCheck == 1 && board[j][k] === 'L'){
+					board[j][k] = new Tree("Oak", j, k, tileX, tileY);
+				}
+			}
+		}
+	}
+}
+
 function start() {
 	startGL();
-	for(var i = 0; i < randomSizeOfForest; i++){
-		forest.addTree(new Tree("Oak", Math.floor(Math.random() * rows), Math.floor(Math.random() * cols), tileX, tileY));
-	}
-	// forest.addTree(new Tree("Oak", 1, 1, tileX, tileY));
-	// forest.addTree(new Tree("Pine", 5, 5, tileX, tileY));
-	console.table(forest.trees);
+	treeGeneration();
 	trackSunMoonCycle(64, cntxt);
 }
 
@@ -24,6 +32,12 @@ function create_board(row, col) {
 	var obj = new Array(row);
 	for (y = 0; y < col; y++) {
 		obj[y] = new Array(col);
+	}
+
+	for (y = 0; y < row; y++) {
+		for (x = 0; x < col; x++) {
+			obj[y][x] = 'L';
+		}
 	}
 	return obj;
 }
@@ -39,8 +53,6 @@ function initGL(canvas) {
 	canvasHeight = canvas.clientHeight;
 	canvasX = canvasWidth * 2;
 	canvasY = canvasHeight * 2;
-	cols = 300;
-	rows = 150;
 	tileX = Math.floor(canvasX / rows);
 	tileY = Math.floor(canvasY / cols);
 	board = create_board(rows, cols);
