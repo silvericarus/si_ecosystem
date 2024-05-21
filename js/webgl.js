@@ -1,20 +1,20 @@
-var canvas;
-var cntxt;
-var canvasX;
-var canvasY;
-var tileX, tileY;
-var board 
-var rows;
-var cols;
-var randomSizeOfForest = Math.floor(Math.random() * 50);
+let canvas;
+let cntxt;
+let canvasX;
+let canvasY;
+let tileX, tileY;
+let board 
+let rows;
+let cols;
+let randomSizeOfForest = Math.floor(Math.random() * 50);
 const forest = new Forest();
 
 function treeGeneration() {
 	let treesGenerated = 0;
 	let lastPosition = [];
-	for(var i = 0; i < randomSizeOfForest; i++){
-		for(var j = 0; j < canvasY; j++){
-			for(var k = 0; k < canvasX; k++){
+	for(let i = 0; i < randomSizeOfForest; i++){
+		for(let j = 0; j < canvasY; j++){
+			for(let k = 0; k < canvasX; k++){
 				if(treesGenerated >= randomSizeOfForest){
 					break;
 				}
@@ -33,7 +33,6 @@ function treeGeneration() {
 			}
 		}
 	}
-	console.table(forest.trees);
 }
 
 function start() {
@@ -43,13 +42,13 @@ function start() {
 }
 
 function create_board(row, col) {
-	var obj = new Array(row);
-	for (y = 0; y < col; y++) {
+	let obj = new Array(row);
+	for (let y = 0; y < col; y++) {
 		obj[y] = new Array(col);
 	}
 
-	for (y = 0; y < row; y++) {
-		for (x = 0; x < col; x++) {
+	for (let y = 0; y < row; y++) {
+		for (let x = 0; x < col; x++) {
 			obj[y][x] = 'L';
 		}
 	}
@@ -63,8 +62,8 @@ function startGL() {
 
 function initGL(canvas) {
 	cntxt = canvas.getContext("2d");
-	canvasWidth = 375;
-	canvasHeight = 187;
+	let canvasWidth = 375;
+	let canvasHeight = 187;
 	canvasX = canvasWidth * 2.5;
 	canvasY = canvasHeight * 19;
 	rows = 150;

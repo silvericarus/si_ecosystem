@@ -31,7 +31,7 @@ class Tree {
     }
 
     draw = function() {
-        var color = this.color;
+        let color = this.color;
         cntxt.fillStyle = color;
         cntxt.fillRect(this.x * tileX, this.y * tileY, this.size, this.size);
     }
