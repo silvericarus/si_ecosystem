@@ -1,60 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="./img/favicon.svg">
-        <link rel="stylesheet" href="./css/bulma.min.css">
-        <link rel="stylesheet" href="./css/main.css">
-        <title>SI_Ecosystem</title>
-    </head>
-    <body onload="start()">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-three-quarters">
-                    <canvas style="width: 100%;height: 100%; border:1px solid;" id="earth">
-                        Your browser does not appear to support the HTML5 element
-                        <code>&lt;canvas&gt;</code>.
-                    </canvas>
-                </div>
-                <div class="column">
-                    <div class="box">
-                        <h1 class="subtitle">SI_Ecosystem live data</h1>
-                        <table>
-                            <tr>
-                                <td>Date:</td>
-                                <td id="date">0</td>
-                            <tr>
-                                <td>Time:</td>
-                                <td id="time">0</td>
-                            </tr>
-                            <tr>
-                                <td>Temperature:</td>
-                                <td id="temperature">0</td>
-                            </tr>
-                            <tr>
-                                <td>Humidity:</td>
-                                <td id="humidity">0</td>
-                            </tr>
-                            <tr>
-                                <td>Light:</td>
-                                <td id="light">0</td>
-                            </tr>
-                            <tr>
-                                <td>Water:</td>
-                                <td id="water">0</td>
-                            </tr>
-                            <tr>
-                                <td>Wind:</td>
-                                <td id="wind">0</td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <script defer src="./js/classes.js"></script>
+    <script defer src="./js/webgl.js"></script>
+    <script defer src="./js/time.js"></script>
+    <link rel="icon" href="./img/favicon.svg">
+    <link rel="stylesheet" href="./css/bulma.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <title>SI_Ecosystem</title>
+  </head>
+
+  <body onloadeddata="start()">
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+    <div className="container">
+      <div className="columns">
+        <div className="column is-three-quarters">
+          <canvas
+            style="width: '100%'; height: '100%'; border: '1px solid'"
+            id="earth"
+          >
+      Your browser does not appear to support the HTML5 element <code>&lt;canvas&gt;</code>.
+          </canvas>
         </div>
-    </body>
-    <script src="./js/classes.js"></script>
-    <script src="./js/webgl.js"></script>
-    <script src="./js/time.js"></script>
+        <div className="column">
+          <div className="box">
+            <h1 className="subtitle">SI_Ecosystem live data</h1>
+            <table>
+              <tbody>
+                <tr>
+                  <th>Date</th>
+                  <td id="date">0</td>
+                </tr>
+                <tr>
+                  <th>Time</th>
+                  <td id="time">0</td>
+                </tr>
+                <tr>
+                  <th>Temperature</th>
+                  <td id="temperature">0</td>
+                </tr>
+                <tr>
+                  <th>Humidity</th>
+                  <td id="humidity">0</td>
+                </tr>
+                <tr>
+                  <th>Light</th>
+                  <td id="light">0</td>
+                </tr>
+                <tr>
+                  <th>Water</th>
+                  <td id="water">0</td>
+                </tr>
+                <tr>
+                  <th>Wind</th>
+                  <td id="wind">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
