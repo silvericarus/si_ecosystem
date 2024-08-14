@@ -9,6 +9,10 @@ let cols;
 let randomSizeOfForest = Math.floor(Math.random() * 50);
 const forest = new Forest();
 
+document.addEventListener("DOMContentLoaded", function () {
+  start();
+});
+
 function treeGeneration() {
   let treesGenerated = 0;
   let lastPosition = [];
@@ -39,7 +43,7 @@ function treeGeneration() {
 
 function start() {
   startGL();
-  treeGeneration();
+  //treeGeneration();
   trackSunMoonCycle(64, cntxt);
 }
 
@@ -65,10 +69,10 @@ function startGL() {
 function initGL(canvas) {
   cntxt = canvas.getContext("2d");
   let canvasWidth = 375;
-  let canvasHeight = 187;
+  let canvasHeight = 375;
   canvasX = canvasWidth * 2.5;
   canvasY = canvasHeight * 19;
-  rows = 150;
+  rows = 300;
   cols = 300;
   tileX = Math.floor(canvasX / rows);
   tileY = Math.floor(canvasY / cols);
