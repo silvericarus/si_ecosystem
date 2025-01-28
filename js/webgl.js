@@ -4,8 +4,8 @@ let canvasX;
 let canvasY;
 let tileX, tileY;
 let board;
-let rows;
-let cols;
+let rows = 1_000;
+let cols = 1_000;
 let randomSizeOfForest = Math.floor(Math.random() * 50);
 const forest = new Forest();
 
@@ -41,10 +41,10 @@ function treeGeneration() {
   }
 }
 
-function start() {
+async function start() {
   startGL();
   //treeGeneration();
-  trackSunMoonCycle(64, cntxt);
+  await drawBoard();
 }
 
 function create_board(row, col) {
@@ -61,20 +61,24 @@ function create_board(row, col) {
   return obj;
 }
 
-function startGL() {
-  canvas = document.getElementById("earth");
-  initGL(canvas);
+async function drawBoard() {
+  let cell;
+  board.forEach((row, y) => {
+    row.forEach((tile, x) => {
+      cell = document.createElement("div");
+      cell.id = `${y}-${x}`;
+      cell.style = `grid-column: ${x + 1}; grid-row: ${y + 1};`;
+      cell.innerHTML = "#";
+      earth.appendChild(cell);
+    });
+  });
 }
 
-function initGL(canvas) {
-  cntxt = canvas.getContext("2d");
-  let canvasWidth = 375;
-  let canvasHeight = 375;
-  canvasX = canvasWidth * 2.5;
-  canvasY = canvasHeight * 19;
-  rows = 300;
-  cols = 300;
-  tileX = Math.floor(canvasX / rows);
-  tileY = Math.floor(canvasY / cols);
+function startGL() {
+  canvas = document.getElementById("earth");
+  initGL();
+}
+
+function initGL() {
   board = create_board(rows, cols);
 }
