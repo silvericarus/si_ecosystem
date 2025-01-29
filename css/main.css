@@ -1,20 +1,25 @@
 body {
     background-color: #2b2a33;
+    height: 100vh;
 }
 
 #earth {
     display: grid;
     place-items: center;
-    height: 100vh;
-    width: 100%;
-    grid-template-columns: repeat(1000, 1px);
-    grid-template-rows: repeat(1000, 1px);
+    height: 50vh;
+    width: 50%;
+    grid-template-columns: repeat(10, 16px);
+    grid-template-rows: repeat(10, 16px);
 }
 
 #earth div {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 1px;
-    height: 1px;
+    width: 16px;
+    height: 16px;
+}
+
+.cell {
+    font-size:larger;
 }

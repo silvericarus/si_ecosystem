@@ -4,8 +4,8 @@ let canvasX;
 let canvasY;
 let tileX, tileY;
 let board;
-let rows = 1_000;
-let cols = 1_000;
+let rows = 50;
+let cols = 50;
 let randomSizeOfForest = Math.floor(Math.random() * 50);
 const forest = new Forest();
 
@@ -41,10 +41,10 @@ function treeGeneration() {
   }
 }
 
-async function start() {
+function start() {
   startGL();
   //treeGeneration();
-  await drawBoard();
+  drawBoard();
 }
 
 function create_board(row, col) {
@@ -55,23 +55,31 @@ function create_board(row, col) {
 
   for (let y = 0; y < row; y++) {
     for (let x = 0; x < col; x++) {
-      obj[y][x] = "L";
+      obj[y][x] = "#";
     }
   }
   return obj;
 }
 
-async function drawBoard() {
-  let cell;
+function drawBoard() {
+  console.table(board);
+  let fragment = document.createDocumentFragment();
   board.forEach((row, y) => {
     row.forEach((tile, x) => {
-      cell = document.createElement("div");
+      let cell = document.createElement("div");
       cell.id = `${y}-${x}`;
-      cell.style = `grid-column: ${x + 1}; grid-row: ${y + 1};`;
-      cell.innerHTML = "#";
-      earth.appendChild(cell);
+      cell.className = "cell";
+      cell.style.gridColumn = x + 1;
+      cell.style.gridRow = y + 1;
+      cell.innerHTML = tile;
+      cell.addEventListener("click", () => {
+        alert(`Tile: ${y}-${x}`);
+      });
+      cell.style.cursor = "crosshair";
+      fragment.appendChild(cell);
     });
   });
+  canvas.appendChild(fragment);
 }
 
 function startGL() {
