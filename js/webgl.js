@@ -1,8 +1,4 @@
-let canvas;
-let cntxt;
-let canvasX;
-let canvasY;
-let tileX, tileY;
+let log;
 let board;
 let rows = 50;
 let cols = 50;
@@ -44,10 +40,37 @@ function treeGeneration() {
 function start() {
   startGL();
   //treeGeneration();
-  drawBoard();
 }
 
-function create_board(row, col) {
+function generateLogItem(element, log) {
+  let card = document.createElement("div");
+  card.classList.add("card");
+
+  let cardContent = document.createElement("div");
+  cardContent.classList.add("card-content");
+
+  let content = document.createElement("div");
+  content.classList.add("content");
+
+  content.innerHTML = typeof element + " creado.<br/>";
+
+  let time = document.createElement("time");
+
+  let date = new Date();
+
+  time.dateTime =
+    date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+  time.innerText = date.toLocaleString();
+
+  cardContent.appendChild(content);
+  cardContent.appendChild(time);
+
+  card.appendChild(cardContent);
+
+  log.appendChild(card);
+}
+
+function createBoard(row, col) {
   let obj = new Array(row);
   for (let y = 0; y < col; y++) {
     obj[y] = new Array(col);
@@ -61,32 +84,9 @@ function create_board(row, col) {
   return obj;
 }
 
-function drawBoard() {
-  console.table(board);
-  let fragment = document.createDocumentFragment();
-  board.forEach((row, y) => {
-    row.forEach((tile, x) => {
-      let cell = document.createElement("div");
-      cell.id = `${y}-${x}`;
-      cell.className = "cell";
-      cell.style.gridColumn = x + 1;
-      cell.style.gridRow = y + 1;
-      cell.innerHTML = tile;
-      cell.addEventListener("click", () => {
-        alert(`Tile: ${y}-${x}`);
-      });
-      cell.style.cursor = "crosshair";
-      fragment.appendChild(cell);
-    });
-  });
-  canvas.appendChild(fragment);
-}
-
 function startGL() {
-  canvas = document.getElementById("earth");
-  initGL();
-}
-
-function initGL() {
-  board = create_board(rows, cols);
+  log = document.getElementById("earth");
+  board = createBoard(rows, cols);
+  console.log("board generado:", board);
+  generateLogItem(board, log);
 }

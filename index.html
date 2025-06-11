@@ -9,55 +9,77 @@
     <script defer src="./js/classes.js"></script>
     <script defer src="./js/webgl.js"></script>
     <script defer src="./js/time.js"></script>
-    <link rel="icon" href="./img/favicon.svg">
-    <link rel="stylesheet" href="./css/bulma.min.css">
-    <link rel="stylesheet" href="./css/main.css">
+    <link rel="icon" href="./img/favicon.svg" />
+    <link rel="stylesheet" href="./css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./css/bulma.min.css" />
+    <link rel="stylesheet" href="./css/main.css" />
     <title>SI_Ecosystem</title>
   </head>
-
   <body>
-    <noscript> You need to enable JavaScript to run this app. </noscript>
-    <div className="container">
-      <div className="columns" style="display:flex;">
-        <div className="column">
-          <div id="earth"></div>
+    <noscript> You need to enable JavaScript to run this app.</noscript>
+    <div class="container">
+      <div class="columns">
+        <div class="column is-two-thirds">
+          <article class="message is-success">
+            <div class="message-header">
+              <p>Log</p>
+            </div>
+            <div class="message-body" id="earth"></div>
+          </article>
         </div>
-        <div className="column">
-          <div className="box">
-            <h1 className="subtitle">SI_Ecosystem live data</h1>
-            <table>
-              <tbody>
-                <tr>
-                  <th>Date</th>
-                  <td id="date">0</td>
-                </tr>
-                <tr>
-                  <th>Time</th>
-                  <td id="time">0</td>
-                </tr>
-                <tr>
-                  <th>Temperature</th>
-                  <td id="temperature">0</td>
-                </tr>
-                <tr>
-                  <th>Humidity</th>
-                  <td id="humidity">0</td>
-                </tr>
-                <tr>
-                  <th>Light</th>
-                  <td id="light">0</td>
-                </tr>
-                <tr>
-                  <th>Water</th>
-                  <td id="water">0</td>
-                </tr>
-                <tr>
-                  <th>Wind</th>
-                  <td id="wind">0</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="column">
+          <nav class="panel is-success">
+            <p class="panel-heading">SI_Ecosystem live data</p>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fa fa-calendar-o" aria-hidden="true"></i>
+              </span>
+              Date:
+              <span id="date">0</span>
+            </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fa fa-clock-o" aria-hidden="true"></i>
+              </span>
+              Time:
+              <span id="time">0</span>
+            </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fa fa-fire" aria-hidden="true"></i>
+              </span>
+              Temperature:
+              <span id="temperature">0</span>
+            </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fa fa-tint" aria-hidden="true"></i>
+              </span>
+              Humidity:
+              <span id="humidity">0</span>
+            </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fa fa-sun-o" aria-hidden="true"></i>
+              </span>
+              Light:
+              <span id="light">0</span>
+            </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fa fa-glass" aria-hidden="true"></i>
+              </span>
+              Water:
+              <span id="water">0</span>
+            </a>
+            <a class="panel-block">
+              <span class="panel-icon">
+                <i class="fa fa-flag" aria-hidden="true"></i>
+              </span>
+              Wind:
+              <span id="wind">0</span>
+            </a>
+          </nav>
         </div>
       </div>
     </div>
