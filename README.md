@@ -6,3 +6,5 @@
 
 # SI_Ecosystem
 This is a WIP project about FSM and simulating nature life in an ecosystem.
+> [!WARNING]
+> The project has been completely restarted, as the previous approach was deemed imposible after further analysis. The app is currently under development in a very early stage, on it's prerelease version 0.2
