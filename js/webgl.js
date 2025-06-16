@@ -15,29 +15,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function treeGeneration() {
   let treesGenerated = 0;
-  let lastPosition = [];
+  generateLogItem("Generating " + randomSizeOfForest + " trees", log);
   for (let i = 0; i < randomSizeOfForest; i++) {
-    for (let j = 0; j < canvasY; j++) {
-      for (let k = 0; k < canvasX; k++) {
-        if (treesGenerated >= randomSizeOfForest) {
-          break;
-        }
-        //TODO - Fix the random generation of trees
-        const x = Math.floor(Math.random() * cols) / 6;
-        const y = Math.floor(Math.random() * rows) / 6;
-        if (
-          (Math.abs(lastPosition[0] - x) > 4 &&
-            Math.abs(lastPosition[1] - y) > 4) ||
-          treesGenerated === 0
-        ) {
-          let tree = new Tree("Oak", x, y, tileX, tileY);
-          forest.addTree(tree);
-          board[x][y] = "T";
-          treesGenerated++;
-          lastPosition = [x, y];
-        }
-      }
+    const x = Math.trunc(Math.floor(Math.random() * cols));
+    const y = Math.trunc(Math.floor(Math.random() * rows));
+    if (treesGenerated >= randomSizeOfForest) {
+      break;
     }
+    let tree = new Tree("Oak", x, y);
+    forest.addTree(tree);
+    board[x][y] = "T";
+    treesGenerated++;
+    generateLogItem(tree.treeKind, log);
   }
 }
 
@@ -55,7 +44,12 @@ function start() {
       secondsFromStart++;
     }
   }, 1000);
-  //treeGeneration();
+  treeGeneration();
+}
+
+function autoScrollToBottom(containerId) {
+  const container = document.getElementById(containerId);
+  container.scrollTop = container.scrollHeight;
 }
 
 function generateLogItem(element, log) {
@@ -68,7 +62,7 @@ function generateLogItem(element, log) {
   let content = document.createElement("div");
   content.classList.add("content");
 
-  content.innerHTML = typeof element + " creado.<br/>";
+  content.innerHTML = element + " creado.<br/>";
 
   let time = document.createElement("time");
 
@@ -87,6 +81,8 @@ function generateLogItem(element, log) {
   card.appendChild(cardContent);
 
   log.appendChild(card);
+
+  autoScrollToBottom("earth");
 }
 
 function createBoard(row, col) {
@@ -118,7 +114,6 @@ function startGL() {
       : '<span class="icon is-large"><i class="fa fa-pause" aria-hidden="true"></i></span>';
   });
   board = createBoard(rows, cols);
-  console.log("board generado:", board);
-  generateLogItem(board, log);
+  generateLogItem("Board", log);
   populateLiveData();
 }
