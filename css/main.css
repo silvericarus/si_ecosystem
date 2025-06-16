@@ -7,12 +7,13 @@ body {
 
 #earth {
   max-height: 50vh;
+  overflow: hidden;
+  overflow-y: auto; 
+  overflow-x: hidden;
 }
 
 #earth .message-body {
   font-size: larger;
-  overflow-y: scroll;
-  overflow-x: visible;
 }
 
 .panel a {
