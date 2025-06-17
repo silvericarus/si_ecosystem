@@ -31,7 +31,8 @@ function treeGeneration() {
     forest.addTree(tree);
     board[x][y] = "T";
     treesGenerated++;
-    generateLogItem(log, "spawned", tree.treeKind, ` at (${x}, ${y}).`);
+    tree.id = tree.generateUUID();
+    generateLogItem(log, "spawned", tree.toString(), ` at (${x}, ${y}).`);
   }
 }
 
@@ -47,6 +48,16 @@ function start() {
         .toString()
         .padStart(2, "0")}:${segundosRestantes.toString().padStart(2, "0")}`;
       secondsFromStart++;
+      // Update the age of each tree in the forest
+      forest.trees.forEach((tree) => {
+        tree.ageOneYear();
+        if (tree.isDead()) {
+          generateLogItem(log, "death", tree.toString(), " has died.");
+          forest.removeTree(tree.id);
+          board[tree.x][tree.y] = "#";
+        }
+        //TODO Do more stuff with the tree if needed if they are not dead
+      });
     }
   }, 1000);
   treeGeneration();
@@ -86,8 +97,8 @@ function generateLogItem(log, category, type, details) {
     case "spawned":
       content.innerHTML = "✨Spawned.<br/>" + type + details;
       break;
-    case "warning":
-      content.classList.add("has-text-warning");
+    case "death":
+      content.innerHTML = "💀Died.<br/>" + type + details;
       break;
     case "success":
       content.classList.add("has-text-success");
