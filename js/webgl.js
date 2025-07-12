@@ -27,7 +27,7 @@ function treeGeneration() {
     if (treesGenerated >= randomSizeOfForest) {
       break;
     }
-    let tree = new Tree("Oak", x, y);
+    let tree = new Tree("Oak", x, y, board);
     forest.addTree(tree);
     board[x][y] = "T";
     treesGenerated++;
@@ -38,6 +38,7 @@ function treeGeneration() {
 
 function start() {
   secondsFromStart = 0;
+  let foodPOW = false;
   startGL();
   setInterval(() => {
     if (!dayCycleHalt) {
@@ -48,15 +49,31 @@ function start() {
         .toString()
         .padStart(2, "0")}:${segundosRestantes.toString().padStart(2, "0")}`;
       secondsFromStart++;
-      // Update the age of each tree in the forest
-      forest.trees.forEach((tree) => {
+      forest.trees.forEach(async (tree) => {
         tree.ageOneYear();
         if (tree.isDead()) {
           generateLogItem(log, "death", tree.toString(), " has died.");
           forest.removeTree(tree.id);
           board[tree.x][tree.y] = "#";
         }
-        //TODO Do more stuff with the tree if needed if they are not dead
+        if (tree.age >= 20) {
+          foodPOW = tree.foodProofOfWork(secondsFromStart);
+        }
+        if (tree.age >= 20 && tree.age % 5 === 0 && foodPOW) {
+          tree.calculateFoodGrowth();
+          tree.generateFood();
+          if (tree.food.length > 0) {
+            tree.food.forEach((food) => {
+              generateLogItem(
+                log,
+                "spawned",
+                food.toString(),
+                ""
+              );
+              board[food.x][food.y] = food.id;
+            });
+          }
+        }
       });
     }
   }, 1000);
