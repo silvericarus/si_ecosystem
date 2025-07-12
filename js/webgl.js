@@ -2,7 +2,7 @@ let log;
 let board;
 let dayCycleHaltButton;
 let dayCycleHalt;
-var liveTime;
+let liveTime;
 let secondsFromStart;
 let rows = 50;
 let cols = 50;
@@ -89,7 +89,7 @@ function smoothScrollToBottom(containerId, duration) {
 
   function scrollStep(currentTime) {
     const elapsed = currentTime - startTime;
-    const progress = Math.min(elapsed / duration, 1); // Ensure progress doesn't exceed 1
+    const progress = Math.min(elapsed / duration, 1);
     container.scrollTop = start + distance * progress;
 
     if (progress < 1) {
@@ -128,12 +128,11 @@ function generateLogItem(log, category, type, details) {
 
   time.dateTime =
     date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-  const horas = Math.floor(secondsFromStart / 3600);
-  const minutos = Math.floor((secondsFromStart % 3600) / 60);
-  const segundosRestantes = secondsFromStart % 60;
-  time.innerText = `${horas.toString().padStart(2, "0")}:${minutos
+  const hours = Math.floor(secondsFromStart / 3600);
+  const minutes = Math.floor((secondsFromStart % 3600) / 60);
+  time.innerText = `${hours.toString().padStart(2, "0")}:${minutes
     .toString()
-    .padStart(2, "0")}:${segundosRestantes.toString().padStart(2, "0")}`;
+    .padStart(2, "0")}:${(secondsFromStart % 60).toString().padStart(2, "0")}`;
 
   cardContent.appendChild(content);
   cardContent.appendChild(time);

@@ -29,21 +29,19 @@ class Item {
     }
   }
   populateNeighbours(board) {
-    //populate neighbours based on the x and y values of the item
     const directions = [
-      { x: -1, y: 0 }, // left
-      { x: 1, y: 0 }, // right
-      { x: 0, y: -1 }, // up
-      { x: 0, y: 1 }, // down
-      { x: -1, y: -1 }, // top-left
-      { x: 1, y: -1 }, // top-right
-      { x: -1, y: 1 }, // bottom-left
-      { x: 1, y: 1 }, // bottom-right
+      { x: -1, y: 0 },
+      { x: 1, y: 0 },
+      { x: 0, y: -1 },
+      { x: 0, y: 1 },
+      { x: -1, y: -1 },
+      { x: 1, y: -1 },
+      { x: -1, y: 1 },
+      { x: 1, y: 1 },
     ];
     directions.forEach((direction) => {
       const newX = this.x + direction.x;
       const newY = this.y + direction.y;
-      //check if the new coordinates are within the bounds of the board
       if (
         newX >= 0 &&
         newY >= 0 &&
@@ -70,7 +68,6 @@ class Forest {
     this.trees = this.trees.filter((tree) => tree.id !== id);
   }
 }
-
 class LivingBeing extends Item {
   constructor(x, y, board) {
     super("Living Being", x, y, board);
@@ -105,15 +102,15 @@ class Food extends Item {
     return `🍽️${this.type} at (${this.x}, ${this.y}).`;
   }
 }
-
 class Tree extends LivingBeing {
   constructor(treeKind, x, y, board) {
     super(x, y, board);
     this.id = this.generateUUID();
     this.treeKind = treeKind;
     this.foodKind = "Fruit";
+    this.decideFood();
     this.foodGenerated = 0;
-    this.foodGrowthRate = Math.floor(Math.random() * 5) + 1; // In the future, the climate and the water will also impact the food growth rate
+    this.foodGrowthRate = Math.floor(Math.random() * 5) + 1;
     this.food = [];
     this.x = x;
     this.y = y;
@@ -141,7 +138,6 @@ class Tree extends LivingBeing {
         return;
       }
       console.log(neighbours);
-      // Randomly select an element from the map
       const randomNeighbour = Array.from(neighbours.keys())[
         Math.floor(Math.random() * neighbours.size)
       ];
