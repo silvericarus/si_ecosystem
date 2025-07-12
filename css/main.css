@@ -20,5 +20,16 @@ body {
   background-color: #ebf6f1;
   justify-content: space-evenly;
   flex-direction: row;
-  font-weight: bolder;
+  font-weight: 700;
+  font-family: "Almarai", sans-serif;
+}
+
+.card {
+  background-color: #b4eed4;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  font-family: "Almarai", sans-serif;
+  font-weight: 400;
 }
