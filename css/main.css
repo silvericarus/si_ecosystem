@@ -33,3 +33,55 @@ body {
   font-family: "Almarai", sans-serif;
   font-weight: 400;
 }
+
+.cell {
+  border: 1px solid #2b2a33;
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+.cell:hover::after {
+  opacity: 1;
+}
+
+.cell::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+#map {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  grid-gap: 0px 0px;
+}
+
+.tree {
+  background-color: #b0d08b;
+}
+
+.food {
+  background-color: #f0c27b;
+}
+
+.dead-tree {
+  background-color: #7b8d8d;
+}
+
+.empty {
+  background-color: #f6ecab;
+}
