@@ -1,11 +1,12 @@
 let log;
+let map;
 let board;
 let dayCycleHaltButton;
 let dayCycleHalt;
 let liveTime;
 let secondsFromStart;
-let rows = 50;
-let cols = 50;
+let rows = 20;
+let cols = 20;
 let randomSizeOfForest = Math.floor(Math.random() * 50);
 const forest = new Forest();
 
@@ -49,6 +50,7 @@ function start() {
         .toString()
         .padStart(2, "0")}:${segundosRestantes.toString().padStart(2, "0")}`;
       secondsFromStart++;
+      populateMap();
       forest.trees.forEach(async (tree) => {
         tree.ageOneYear();
         if (tree.isDead()) {
@@ -64,13 +66,8 @@ function start() {
           tree.generateFood();
           if (tree.food.length > 0) {
             tree.food.forEach((food) => {
-              generateLogItem(
-                log,
-                "spawned",
-                food.toString(),
-                ""
-              );
-              board[food.x][food.y] = food.id;
+              generateLogItem(log, "spawned", food.toString(), "");
+              board[food.x][food.y] = "F";
             });
           }
         }
@@ -152,7 +149,7 @@ function createBoard(row, col) {
 
   for (let y = 0; y < row; y++) {
     for (let x = 0; x < col; x++) {
-      obj[y][x] = "#";
+      obj[y][x] = ".";
     }
   }
   return obj;
@@ -160,6 +157,34 @@ function createBoard(row, col) {
 
 function populateLiveData() {
   liveTime = document.getElementById("time");
+}
+
+function populateMap() {
+  map = document.getElementById("map");
+  map.innerHTML = "";
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      let cell = document.createElement("span");
+      cell.classList.add("cell");
+      cell.setAttribute("id", `cell-${x}-${y}`);
+      cell.dataset.tooltip = `(${x}, ${y})`;
+      switch (board[y][x]) {
+        case "T":
+          cell.classList.add("tree");
+          break;
+        case "F":
+          cell.classList.add("food");
+          break;
+        case "#":
+          cell.classList.add("dead-tree");
+          break;
+        case ".":
+          cell.classList.add("empty");
+      }
+      cell.innerText = board[y][x];
+      map.appendChild(cell);
+    }
+  }
 }
 
 function startGL() {
@@ -173,6 +198,7 @@ function startGL() {
       : '<span class="icon is-large"><i class="fa fa-pause" aria-hidden="true"></i></span>';
   });
   board = createBoard(rows, cols);
+  populateMap();
   generateLogItem(log, "spawned", "Board", " created successfully.");
   populateLiveData();
 }
