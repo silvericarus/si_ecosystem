@@ -5,6 +5,7 @@ class Item {
     this.neighbours = new Map();
     this.x = x;
     this.y = y;
+    this.symbol = "#";
     this.populateNeighbours(board);
   }
   toString() {
@@ -68,12 +69,28 @@ class Forest {
     this.trees = this.trees.filter((tree) => tree.id !== id);
   }
 }
+class Floor extends Item {
+  constructor(x, y, board) {
+    super("Floor", x, y, board);
+    this.id = this.generateUUID();
+    this.x = x;
+    this.y = y;
+    this.symbol = ".";
+  }
+  toString() {
+    return `Floor at (${this.x}, ${this.y})`;
+  }
+  isEmpty() {
+    return this.symbol === ".";
+  }
+}
 class LivingBeing extends Item {
   constructor(x, y, board) {
     super("Living Being", x, y, board);
-    this.id = "t";
+    this.id = this.generateUUID();
     this.x = x;
     this.y = y;
+    this.symbol = "L";
     this.age = 0;
     this.lifeExpectancy = 100;
   }
@@ -95,11 +112,25 @@ class Food extends Item {
     this.id = this.generateUUID();
     this.rotTime = 0;
     this.time = 0;
+    this.symbol = "🍎";
     this.x = x;
     this.y = y;
   }
   toString() {
     return `🍽️${this.type} at (${this.x}, ${this.y}).`;
+  }
+}
+class DeadTree extends Food{
+  constructor(x, y, board) {
+    super("Dead Tree", x, y, board);
+    this.id = this.generateUUID();
+    this.x = x;
+    this.y = y;
+    this.symbol = "𖣂";
+  }
+
+  toString() {
+    return `Dead Tree at (${this.x}, ${this.y}).`;
   }
 }
 class Tree extends LivingBeing {
@@ -112,6 +143,7 @@ class Tree extends LivingBeing {
     this.foodGenerated = 0;
     this.foodGrowthRate = Math.floor(Math.random() * 5) + 1;
     this.food = [];
+    this.symbol = "🌳";
     this.x = x;
     this.y = y;
     this.lifeExpectancy = 200;
