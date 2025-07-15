@@ -169,11 +169,18 @@ class Tree extends LivingBeing {
         console.warn("No available neighbours to place food.");
         return;
       }
-      console.log(neighbours);
-      const randomNeighbour = Array.from(neighbours.keys())[
-        Math.floor(Math.random() * neighbours.size)
+      const validNeighbours = Array.from(neighbours.entries()).filter(
+        ([, item]) => item instanceof Floor && item.isEmpty()
+      );
+      if (validNeighbours.length === 0) {
+        console.warn("No valid neighbours to place food.");
+        return;
+      }
+      const randomNeighbour = validNeighbours[
+        Math.floor(Math.random() * validNeighbours.length)
       ];
-      const [x, y] = randomNeighbour.split(", ").map(Number);
+      const x = randomNeighbour[1].x;
+      const y = randomNeighbour[1].y;
       const food = new Food(this.foodKind, x, y, board);
       this.food.push(food);
     }

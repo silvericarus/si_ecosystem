@@ -67,6 +67,8 @@ function start() {
           if (tree.food.length > 0) {
             tree.food.forEach((food) => {
               generateLogItem(log, "spawned", food.toString(), "");
+              tree.populateNeighbours(board);
+              food.populateNeighbours(board);
               board[food.x][food.y] = food;
             });
           }
