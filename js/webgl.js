@@ -30,7 +30,7 @@ function treeGeneration() {
     }
     let tree = new Tree("Oak", x, y, board);
     forest.addTree(tree);
-    board[x][y] = "T";
+    board[x][y] = tree;
     treesGenerated++;
     tree.id = tree.generateUUID();
     generateLogItem(log, "spawned", tree.toString(), ` at (${x}, ${y}).`);
@@ -56,7 +56,7 @@ function start() {
         if (tree.isDead()) {
           generateLogItem(log, "death", tree.toString(), " has died.");
           forest.removeTree(tree.id);
-          board[tree.x][tree.y] = "#";
+          board[tree.x][tree.y] = new DeadTree(tree.x, tree.y, board);
         }
         if (tree.age >= 20) {
           foodPOW = tree.foodProofOfWork(secondsFromStart);
@@ -67,7 +67,7 @@ function start() {
           if (tree.food.length > 0) {
             tree.food.forEach((food) => {
               generateLogItem(log, "spawned", food.toString(), "");
-              board[food.x][food.y] = "F";
+              board[food.x][food.y] = food;
             });
           }
         }
@@ -149,7 +149,8 @@ function createBoard(row, col) {
 
   for (let y = 0; y < row; y++) {
     for (let x = 0; x < col; x++) {
-      obj[y][x] = ".";
+      let floor = new Floor(x, y, obj);
+      obj[y][x] = floor;
     }
   }
   return obj;
@@ -168,20 +169,20 @@ function populateMap() {
       cell.classList.add("cell");
       cell.setAttribute("id", `cell-${x}-${y}`);
       cell.dataset.tooltip = `(${x}, ${y})`;
-      switch (board[y][x]) {
-        case "T":
+      switch (board[y][x].symbol) {
+        case "🌳":
           cell.classList.add("tree");
           break;
-        case "F":
+        case "🍽️":
           cell.classList.add("food");
           break;
-        case "#":
+        case "X":
           cell.classList.add("dead-tree");
           break;
         case ".":
           cell.classList.add("empty");
       }
-      cell.innerText = board[y][x];
+      cell.innerText = board[y][x].symbol;
       map.appendChild(cell);
     }
   }
