@@ -8,7 +8,10 @@ let secondsFromStart;
 let rows = 20;
 let cols = 20;
 let randomSizeOfForest = Math.floor(Math.random() * 50);
+let randomSizeOfPyramid = Math.floor(Math.random() * 50);
+let levels = Math.floor(randomSizeOfPyramid / 2);
 const forest = new Forest();
+const pyramid = new TrophicPyramid();
 
 document.addEventListener("DOMContentLoaded", function () {
   start();
@@ -34,6 +37,34 @@ function treeGeneration() {
     treesGenerated++;
     tree.id = tree.generateUUID();
     generateLogItem(log, "spawned", tree.toString(), ` at (${x}, ${y}).`);
+  }
+}
+
+function animalGeneration() {
+  let animalsGenerated = 0;
+  generateLogItem(log, "spawned", "Animals", ` with ${randomSizeOfPyramid} animals.`);
+  for (let i = 0; i < randomSizeOfPyramid; i++) {
+    const x = Math.trunc(Math.floor(Math.random() * cols));
+    const y = Math.trunc(Math.floor(Math.random() * rows));
+    if (animalsGenerated >= randomSizeOfPyramid) {
+      break;
+    }
+    let animal;
+    if (i % 2 === 0 || i == 0) {
+      animal = new Herbivore("Herbivore", x, y, board);
+      pyramid.addLevel("Herbivore", animal);
+      levels--;
+    } else {
+      animal = new Carnivore("Carnivore", x, y, board);
+      pyramid.addLevel("Carnivore", animal);
+      levels--;
+    }
+    animal.id = animal.generateUUID();
+    animal.populateNeighbours(board);
+    board[x][y] = animal;
+    pyramid.addLevel(animal.animalKind, animal);
+    animalsGenerated++;
+    generateLogItem(log, "spawned", animal.toString(), ` at (${x}, ${y}).`);
   }
 }
 
@@ -77,6 +108,7 @@ function start() {
     }
   }, 1000);
   treeGeneration();
+  animalGeneration();
 }
 
 function smoothScrollToBottom(containerId, duration) {
@@ -116,8 +148,8 @@ function generateLogItem(log, category, type, details) {
     case "death":
       content.innerHTML = "💀Died.<br/>" + type + details;
       break;
-    case "success":
-      content.classList.add("has-text-success");
+    case "eaten":
+      content.innerHTML = ":canned_food:Eaten.<br/>" + type + details;
       break;
   }
 
@@ -183,6 +215,12 @@ function populateMap() {
           break;
         case ".":
           cell.classList.add("empty");
+          break;
+        case "🐅":
+          cell.classList.add("carnivore");
+          break;
+        case "🐇":
+          cell.classList.add("herbivore");
       }
       cell.innerText = board[y][x].symbol;
       map.appendChild(cell);

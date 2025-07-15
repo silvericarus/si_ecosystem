@@ -98,11 +98,133 @@ class LivingBeing extends Item {
     this.x = x;
     this.y = y;
   }
-  ageOneYear() {
+  isValidMove(x, y) {
+    return (board[x][y] instanceof Floor && x >= 0 && y >= 0 && x < board.length && y < board[0].length);
+  }
+    ageOneYear() {
     this.age += 1;
   }
   isDead() {
     return this.age >= this.lifeExpectancy;
+  }
+}
+class Animal extends LivingBeing {
+  constructor(name, x, y, board) {
+    super(x, y, board);
+    this.name = name;
+    this.id = this.generateUUID();
+    this.symbol = "🐾";
+    this.x = x;
+    this.y = y;
+    this.hunger = 0;
+    this.thirst = 0;
+    this.hungerThreshold = 10;
+    this.thirstThreshold = 10;
+    this.hungerRate = 1;
+    this.thirstRate = 1;
+    this.hp = 100;
+    this.speed = 10;
+    this.animalKind = "";
+  }
+  eat(food, board) {
+    if (food instanceof Food) {
+      this.hunger = Math.max(0, this.hunger - food.rotTime);
+      this.hp = Math.min(100, this.hp + food.rotTime);
+      board[food.x][food.y] = new Floor(food.x, food.y, board);
+      generateLogItem(log, "eaten", food.toString(), ` has been eaten by ${this.name}.`);
+    }
+  }
+  move(x, y) {
+    if (this.isValidMove(x, y)) {
+      this.move(x, y);
+      generateLogItem(log, "moved", this.toString(), ` to (${x}, ${y}).`);
+    } else {
+      console.warn(`Invalid move for ${this.name} to (${x}, ${y}).`);
+    }
+  }
+  toString() {
+    return `${this.symbol}${this.name} at (${this.x}, ${this.y}) with HP: ${this.hp}`;
+  }
+}
+class Carnivore extends Animal {
+  constructor(name, x, y, board) {
+    super(name, x, y, board);
+    this.animalKind = "Carnivore";
+    this.symbol = "🐅";
+    this.hungerThreshold = 5;
+    this.thirstThreshold = 5;
+    this.hungerRate = 2;
+    this.thirstRate = 2;
+    this.hp = 150;
+  }
+  hunt(prey, board) {
+    if (prey instanceof Animal && prey.animalKind === "prey") {
+      this.eat(prey, board);
+      generateLogItem(log, "hunted", prey.toString(), ` by ${this.name}.`);
+      board[prey.x][prey.y] = new Floor(prey.x, prey.y, board);
+    } else {
+      console.warn(`${this.name} cannot hunt ${prey.toString()}.`);
+    }
+  }
+  toString() {
+    return `${this.symbol}${this.name} at (${this.x}, ${this.y}) with HP: ${this.hp}`;
+  }
+}
+class Herbivore extends Animal {
+  constructor(name, x, y, board) {
+    super(name, x, y, board);
+    this.animalKind = "herbivore";
+    this.symbol = "🐇";
+    this.hungerThreshold = 10;
+    this.thirstThreshold = 10;
+    this.hungerRate = 1;
+    this.thirstRate = 1;
+    this.hp = 100;
+  }
+  flee(predator) {
+    if (predator instanceof Predator) {
+      const fleeX = this.x + (Math.random() < 0.5 ? -1 : 1);
+      const fleeY = this.y + (Math.random() < 0.5 ? -1 : 1);
+      if (this.isValidMove(fleeX, fleeY)) {
+        this.move(fleeX, fleeY);
+        generateLogItem(log, "fled", this.toString(), ` from ${predator.name}.`);
+      } else {
+        console.warn(`${this.name} cannot flee to (${fleeX}, ${fleeY}).`);
+      }
+    } else {
+      console.warn(`${this.name} cannot flee from ${predator.toString()}.`);
+    }
+  }
+  toString() {
+    return `${this.symbol}${this.name} at (${this.x}, ${this.y}) with HP: ${this.hp}`;
+  }
+}
+class TrophicPyramid {
+  constructor() {
+    this.pyramid = new Map();
+  }
+  addLevel(level, animal) {
+    if (!this.pyramid.has(level)) {
+      this.pyramid.set(level, []);
+    }
+    this.pyramid.get(level).push(animal);
+  }
+  getLevel(level) {
+    return this.pyramid.get(level) || [];
+  }
+  removeLevel(level) {
+    if (this.pyramid.has(level)) {
+      this.pyramid.delete(level);
+    } else {
+      console.warn(`Level ${level} does not exist in the trophic pyramid.`);
+    }
+  }
+  toString() {
+    let result = "Trophic Pyramid:\n";
+    this.pyramid.forEach((animals, level) => {
+      result += `Level ${level}: ${animals.map((animal) => animal.toString()).join(", ")}\n`;
+    });
+    return result;
   }
 }
 class Food extends Item {
