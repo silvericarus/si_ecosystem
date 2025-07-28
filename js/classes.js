@@ -99,9 +99,11 @@ class LivingBeing extends Item {
     this.y = y;
   }
   isValidMove(x, y) {
-    return (board[x][y] instanceof Floor && x >= 0 && y >= 0 && x < board.length && y < board[0].length);
+    return (
+      board[x] != undefined && board[x][y] instanceof Floor && x >= 0 && y >= 0
+    );
   }
-    ageOneYear() {
+  ageOneYear() {
     this.age += 1;
   }
   isDead() {
@@ -131,19 +133,29 @@ class Animal extends LivingBeing {
       this.hunger = Math.max(0, this.hunger - food.rotTime);
       this.hp = Math.min(100, this.hp + food.rotTime);
       board[food.x][food.y] = new Floor(food.x, food.y, board);
-      generateLogItem(log, "eaten", food.toString(), ` has been eaten by ${this.name}.`);
+      generateLogItem(
+        log,
+        "eaten",
+        food.toString(),
+        ` has been eaten by ${this.name}.`
+      );
     }
   }
   move(x, y) {
     if (this.isValidMove(x, y)) {
-      this.move(x, y);
-      generateLogItem(log, "moved", this.toString(), ` to (${x}, ${y}).`);
+      const oldX = this.x;
+      const oldY = this.y;
+      board[oldX][oldY] = new Floor(oldX, oldY, board);
+      this.x = x;
+      this.y = y;
+      board[x][y] = this;
+      this.populateNeighbours(board);
     } else {
       console.warn(`Invalid move for ${this.name} to (${x}, ${y}).`);
     }
   }
   toString() {
-    return `${this.symbol}${this.name} at (${this.x}, ${this.y}) with HP: ${this.hp}`;
+    return `${this.symbol}${this.name} with HP: ${this.hp}`;
   }
 }
 class Carnivore extends Animal {
@@ -157,17 +169,21 @@ class Carnivore extends Animal {
     this.thirstRate = 2;
     this.hp = 150;
   }
-  hunt(prey, board) {
-    if (prey instanceof Animal && prey.animalKind === "prey") {
-      this.eat(prey, board);
-      generateLogItem(log, "hunted", prey.toString(), ` by ${this.name}.`);
-      board[prey.x][prey.y] = new Floor(prey.x, prey.y, board);
+  hunt(herbivore, board) {
+    if (herbivore instanceof Animal && prey.animalKind === "herbivore") {
+      this.eat(herbivore, board);
+      generateLogItem(log, "hunted", herbivore.toString(), ` by ${this.name}.`);
+      board[herbivore.x][herbivore.y] = new Floor(
+        herbivore.x,
+        herbivore.y,
+        board
+      );
     } else {
-      console.warn(`${this.name} cannot hunt ${prey.toString()}.`);
+      console.warn(`${this.name} cannot hunt ${herbivore.toString()}.`);
     }
   }
   toString() {
-    return `${this.symbol}${this.name} at (${this.x}, ${this.y}) with HP: ${this.hp}`;
+    return `${this.symbol}${this.name} with HP: ${this.hp}`;
   }
 }
 class Herbivore extends Animal {
@@ -181,22 +197,55 @@ class Herbivore extends Animal {
     this.thirstRate = 1;
     this.hp = 100;
   }
-  flee(predator) {
-    if (predator instanceof Predator) {
+  flee(carnivore) {
+    if (carnivore instanceof Carnivore) {
       const fleeX = this.x + (Math.random() < 0.5 ? -1 : 1);
       const fleeY = this.y + (Math.random() < 0.5 ? -1 : 1);
       if (this.isValidMove(fleeX, fleeY)) {
         this.move(fleeX, fleeY);
-        generateLogItem(log, "fled", this.toString(), ` from ${predator.name}.`);
+        generateLogItem(
+          log,
+          "fled",
+          this.toString(),
+          ` from ${carnivore.name}.`
+        );
       } else {
         console.warn(`${this.name} cannot flee to (${fleeX}, ${fleeY}).`);
       }
     } else {
-      console.warn(`${this.name} cannot flee from ${predator.toString()}.`);
+      console.warn(`${this.name} cannot flee from ${carnivore.toString()}.`);
+    }
+  }
+  findFood() {
+    const foodSources = Array.from(this.neighbours.values()).filter(
+      (item) => item instanceof Food
+    );
+    if (foodSources.length > 0) {
+      const food = foodSources[Math.floor(Math.random() * foodSources.length)];
+      this.eat(food, board);
+    } else {
+      console.warn(`${this.name} could not find food nearby.`);
+      const directions = [
+        { x: -1, y: 0 },
+        { x: 1, y: 0 },
+        { x: 0, y: -1 },
+        { x: 0, y: 1 },
+        { x: -1, y: -1 },
+        { x: 1, y: -1 },
+        { x: -1, y: 1 },
+        { x: 1, y: 1 },
+      ];
+      const randomDirection =
+        directions[Math.floor(Math.random() * directions.length)];
+      const newX = this.x + randomDirection.x;
+      const newY = this.y + randomDirection.y;
+      if (this.isValidMove(newX, newY)) {
+        this.move(newX, newY);
+      }
     }
   }
   toString() {
-    return `${this.symbol}${this.name} at (${this.x}, ${this.y}) with HP: ${this.hp}`;
+    return `${this.symbol}${this.name} with HP: ${this.hp}`;
   }
 }
 class TrophicPyramid {
@@ -212,6 +261,19 @@ class TrophicPyramid {
   getLevel(level) {
     return this.pyramid.get(level) || [];
   }
+  removeAnimal(animalId) {
+    for (const [level, animals] of this.pyramid.entries()) {
+      const index = animals.findIndex((animal) => animal.id === animalId);
+      if (index !== -1) {
+        animals.splice(index, 1);
+        if (animals.length === 0) {
+          this.removeLevel(level);
+        }
+        return;
+      }
+    }
+    console.warn(`Animal with ID ${animalId} not found in any level.`);
+  }
   removeLevel(level) {
     if (this.pyramid.has(level)) {
       this.pyramid.delete(level);
@@ -222,7 +284,9 @@ class TrophicPyramid {
   toString() {
     let result = "Trophic Pyramid:\n";
     this.pyramid.forEach((animals, level) => {
-      result += `Level ${level}: ${animals.map((animal) => animal.toString()).join(", ")}\n`;
+      result += `Level ${level}: ${animals
+        .map((animal) => animal.toString())
+        .join(", ")}\n`;
     });
     return result;
   }
@@ -242,7 +306,7 @@ class Food extends Item {
     return `🍽️${this.type} at (${this.x}, ${this.y}).`;
   }
 }
-class DeadTree extends Food{
+class DeadTree extends Food {
   constructor(x, y, board) {
     super("Dead Tree", x, y, board);
     this.id = this.generateUUID();
@@ -298,9 +362,8 @@ class Tree extends LivingBeing {
         console.warn("No valid neighbours to place food.");
         return;
       }
-      const randomNeighbour = validNeighbours[
-        Math.floor(Math.random() * validNeighbours.length)
-      ];
+      const randomNeighbour =
+        validNeighbours[Math.floor(Math.random() * validNeighbours.length)];
       const x = randomNeighbour[1].x;
       const y = randomNeighbour[1].y;
       const food = new Food(this.foodKind, x, y, board);
