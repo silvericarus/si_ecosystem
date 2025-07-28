@@ -42,7 +42,12 @@ function treeGeneration() {
 
 function animalGeneration() {
   let animalsGenerated = 0;
-  generateLogItem(log, "spawned", "Animals", ` with ${randomSizeOfPyramid} animals.`);
+  generateLogItem(
+    log,
+    "spawned",
+    "Animals",
+    ` with ${randomSizeOfPyramid} animals.`
+  );
   for (let i = 0; i < randomSizeOfPyramid; i++) {
     const x = Math.trunc(Math.floor(Math.random() * cols));
     const y = Math.trunc(Math.floor(Math.random() * rows));
@@ -62,7 +67,6 @@ function animalGeneration() {
     animal.id = animal.generateUUID();
     animal.populateNeighbours(board);
     board[x][y] = animal;
-    pyramid.addLevel(animal.animalKind, animal);
     animalsGenerated++;
     generateLogItem(log, "spawned", animal.toString(), ` at (${x}, ${y}).`);
   }
@@ -103,6 +107,24 @@ function start() {
               board[food.x][food.y] = food;
             });
           }
+        }
+      });
+      pyramid.pyramid.forEach((level) => {
+        level.forEach((animal) => {
+          animal.ageOneYear();
+          if (animal.isDead()) {
+            generateLogItem(log, "death", animal.toString(), " has died.");
+            pyramid.removeAnimal(animal.id);
+            board[animal.x][animal.y] = new Floor(animal.x, animal.y, board);
+          } else if (animal.age >= 10) {
+            //hervivores move towards food
+            if (animal instanceof Herbivore) {
+              animal.findFood(board);
+            }
+          }
+        });
+        if (level.length === 0) {
+          pyramid.removeLevel(level.name);
         }
       });
     }
@@ -149,7 +171,7 @@ function generateLogItem(log, category, type, details) {
       content.innerHTML = "💀Died.<br/>" + type + details;
       break;
     case "eaten":
-      content.innerHTML = ":canned_food:Eaten.<br/>" + type + details;
+      content.innerHTML = "🥫Eaten.<br/>" + type + details;
       break;
   }
 
