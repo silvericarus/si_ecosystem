@@ -115,7 +115,11 @@ function start() {
           if (animal.isDead()) {
             generateLogItem(log, "death", animal.toString(), " has died.");
             pyramid.removeAnimal(animal.id);
-            board[animal.x][animal.y] = new Floor(animal.x, animal.y, board);
+            board[animal.x][animal.y] = new DeadAnimal(
+              animal.x,
+              animal.y,
+              board
+            );
           } else if (animal.age >= 10) {
             //hervivores move towards food
             if (animal instanceof Herbivore) {
