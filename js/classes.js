@@ -316,7 +316,20 @@ class DeadTree extends Food {
   }
 
   toString() {
-    return `Dead Tree at (${this.x}, ${this.y}).`;
+    return `${this.name} at (${this.x}, ${this.y}).`;
+  }
+}
+class DeadAnimal extends Food {
+  constructor(name, x, y, board) {
+    super("Dead Animal", x, y, board);
+    this.name = name;
+    this.id = this.generateUUID();
+    this.x = x;
+    this.y = y;
+    this.symbol = "💀";
+  }
+  toString() {
+    return `${this.name} at (${this.x}, ${this.y}).`;
   }
 }
 class Tree extends LivingBeing {
