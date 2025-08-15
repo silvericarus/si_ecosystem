@@ -65,7 +65,7 @@ function animalGeneration() {
       levels--;
     }
     animal.id = animal.generateUUID();
-    animal.populateNeighbours(board);
+    animal.populateNeighbours();
     board[x][y] = animal;
     animalsGenerated++;
     generateLogItem(log, "spawned", animal.toString(), ` at (${x}, ${y}).`);
@@ -102,8 +102,8 @@ function start() {
           if (tree.food.length > 0) {
             tree.food.forEach((food) => {
               generateLogItem(log, "spawned", food.toString(), "");
-              tree.populateNeighbours(board);
-              food.populateNeighbours(board);
+              tree.populateNeighbours();
+              food.populateNeighbours();
               board[food.x][food.y] = food;
             });
           }
@@ -123,7 +123,7 @@ function start() {
           } else if (animal.age >= 10) {
             //hervivores move towards food
             if (animal instanceof Herbivore) {
-              animal.findFood(board);
+              animal.findFood();
             }
           }
         });
