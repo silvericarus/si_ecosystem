@@ -6,7 +6,8 @@ class Item {
     this.x = x;
     this.y = y;
     this.symbol = "#";
-    this.populateNeighbours(board);
+    this.board = board;
+    this.populateNeighbours();
   }
   toString() {
     return `${this.name} at (${this.x}, ${this.y})`;
@@ -29,7 +30,7 @@ class Item {
       this.neighbours.set(coords, item);
     }
   }
-  populateNeighbours(board) {
+  populateNeighbours() {
     const directions = [
       { x: -1, y: 0 },
       { x: 1, y: 0 },
@@ -46,10 +47,10 @@ class Item {
       if (
         newX >= 0 &&
         newY >= 0 &&
-        newX < board.length &&
-        newY < board[0].length
+        newX < this.board.length &&
+        newY < this.board[0].length
       ) {
-        this.addNeighbour(`${newX}, ${newY}`, board[newX][newY]);
+        this.addNeighbour(`${newX}, ${newY}`, this.board[newX][newY]);
       }
     });
   }
@@ -100,7 +101,7 @@ class LivingBeing extends Item {
   }
   isValidMove(x, y) {
     return (
-      board[x] != undefined && board[x][y] instanceof Floor && x >= 0 && y >= 0
+      this.board[x] != undefined && this.board[x][y] instanceof Floor && x >= 0 && y >= 0
     );
   }
   ageOneYear() {
@@ -128,11 +129,11 @@ class Animal extends LivingBeing {
     this.speed = 10;
     this.animalKind = "";
   }
-  eat(food, board) {
+  eat(food) {
     if (food instanceof Food) {
       this.hunger = Math.max(0, this.hunger - food.rotTime);
       this.hp = Math.min(100, this.hp + food.rotTime);
-      board[food.x][food.y] = new Floor(food.x, food.y, board);
+      this.board[food.x][food.y] = new Floor(food.x, food.y, this.board);
       generateLogItem(
         log,
         "eaten",
@@ -145,11 +146,11 @@ class Animal extends LivingBeing {
     if (this.isValidMove(x, y)) {
       const oldX = this.x;
       const oldY = this.y;
-      board[oldX][oldY] = new Floor(oldX, oldY, board);
+      this.board[oldX][oldY] = new Floor(oldX, oldY, this.board);
       this.x = x;
       this.y = y;
-      board[x][y] = this;
-      this.populateNeighbours(board);
+      this.board[x][y] = this;
+      this.populateNeighbours();
     } else {
       console.warn(`Invalid move for ${this.name} to (${x}, ${y}).`);
     }
@@ -169,14 +170,14 @@ class Carnivore extends Animal {
     this.thirstRate = 2;
     this.hp = 150;
   }
-  hunt(herbivore, board) {
-    if (herbivore instanceof Animal && prey.animalKind === "herbivore") {
-      this.eat(herbivore, board);
+  hunt(herbivore) {
+    if (herbivore instanceof Animal && herbivore.animalKind === "herbivore") {
+      this.eat(herbivore);
       generateLogItem(log, "hunted", herbivore.toString(), ` by ${this.name}.`);
-      board[herbivore.x][herbivore.y] = new Floor(
+      this.board[herbivore.x][herbivore.y] = new Floor(
         herbivore.x,
         herbivore.y,
-        board
+        this.board
       );
     } else {
       console.warn(`${this.name} cannot hunt ${herbivore.toString()}.`);
@@ -222,7 +223,7 @@ class Herbivore extends Animal {
     );
     if (foodSources.length > 0) {
       const food = foodSources[Math.floor(Math.random() * foodSources.length)];
-      this.eat(food, board);
+      this.eat(food);
     } else {
       console.warn(`${this.name} could not find food nearby.`);
       const directions = [
@@ -379,7 +380,7 @@ class Tree extends LivingBeing {
         validNeighbours[Math.floor(Math.random() * validNeighbours.length)];
       const x = randomNeighbour[1].x;
       const y = randomNeighbour[1].y;
-      const food = new Food(this.foodKind, x, y, board);
+      const food = new Food(this.foodKind, x, y, this.board);
       this.food.push(food);
     }
   }
